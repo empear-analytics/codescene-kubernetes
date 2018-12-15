@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: codescene-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: codescene
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - codescene-gateway
+  http:
+  - route:
+    - destination:
+        host: codescene
+        port:
+          number: 3003
+    match:
+    - uri:
+        exact: /login
+#    rewrite:
+#      uri: /
