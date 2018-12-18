@@ -11,7 +11,7 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "*"
+    - codescene.aws.atu.de
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -19,7 +19,7 @@ metadata:
   name: codescene
 spec:
   hosts:
-  - "*"
+  - codescene.aws.atu.de
   gateways:
   - codescene-gateway
   http:
@@ -28,8 +28,3 @@ spec:
         host: codescene
         port:
           number: 3003
-    match:
-    - uri:
-        exact: /login
-#    rewrite:
-#      uri: /
