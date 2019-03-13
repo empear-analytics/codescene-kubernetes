@@ -15,7 +15,7 @@ metadata:
   name: "codescene-data"
 spec:
   capacity:
-    storage: 20Gi
+    storage: 30Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Recycle
@@ -23,14 +23,15 @@ spec:
     volumeID: YOUR-VOLUME-ID 
     fsType: ext4
 ```
-For GKE replace the awsElasticBlockStorage with
+For GKE replace the `awsElasticBlockStorage` with an entry for `gcePersistentDisk:`
 ```
   gcePersistentDisk:
     pdName: pd-codescene
     fsType: ext4
 ```
 ### Installing on Google GKE
-1. A dynamic PVC can be defined and then called directly without first creating a volume (as in AWS). 2. Run kubectl commands to install directly from YAML files
+1. A dynamic PVC can be defined and then called directly without first creating a volume (as in AWS). 
+2. Run kubectl commands to install directly from YAML files
 
 In the above example, the final line `volumeName: ` is not needed for dynamic storage
 ```
@@ -56,7 +57,7 @@ metadata:
 spec:
   storageClassName: ""
   capacity:
-    storage: 50G
+    storage: 30G
   accessModes:
     - ReadWriteOnce
   gcePersistentDisk:
@@ -77,22 +78,24 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 50G
+      storage: 30G
 ```
-## kubectl Commands
+## kubectl commands
 ```
-kubectl create -f cs-pv.yaml -n TARGET_NAMESPACE  
-kubectl create -f cs-pv-claim.yaml -n TARGET_NAMESPACE
-kubectl create -f cs-deployment.yaml -n TARGET_NAMESPACE
+export TARGET_NAMESPACE=codescene
+kubectl create -f cs-pv.yaml -n $TARGET_NAMESPACE  
+kubectl create -f cs-pv-claim.yaml -n $TARGET_NAMESPACE
+kubectl create -f cs-deployment.yaml -n $TARGET_NAMESPACE
 ```
 The above creates a permanent volume and mounts it arst /data
 
 # HINTS
 *HINT1* You may also wish to define a configMap and put your Codescene config files in it. You can then mount configMap in place of the existing container files so that changes made are preserved on restarts.
 
-*HINT2* In some environments you will also need to define an ingress. The file `cs-ingress.yaml` should get you started.
+*HINT2* In Nginx environments you will also need to define an ingress. The file `cs-ingress.yaml` should get you started. For Istio, define a `Gateway` and `VirtualService` in place of an ingress.
 
 *HINT3* There are two files (`check_istio.sh` and `debug_istio.sh`)which may be helpful in collecting data when installing Codescene in an Istio Service Mesh.
+
 ## Test against local 
 *NOTE:* (8003 is an arbitrary port number to connect to the service listening on 3003. You are free to choose a different one.) 
 ```
@@ -101,7 +104,32 @@ kubectl -n codescene port-forward $(kubectl -n codescene get pod -l app=codescen
 ```
 http://localhost:8003
 ```
-You will need to create an ingress to access from outside. See https://kubernetes.io/docs/concepts/services-networking/ingress/
+If you are using Nginx or Traefik as an ingress controller (i.e. not Istio) then you will need to create an ingress to access from outside. See https://kubernetes.io/docs/concepts/services-networking/ingress/
+
+Here is an example (bog standard ingress defintion)
+```
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  name: codescene
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: codescene
+              servicePort: 3003
+```
+Replace the annotation 
+
+`kubernetes.io/ingress.class: nginx` 
+
+with your preferred controller e.g. 
+
+`kubernetes.io/ingress.class: istio`
 
 ## Files
 ```

@@ -11,7 +11,7 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - codescene.aws.atu.de
+    - <your.fqdn>
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -19,7 +19,7 @@ metadata:
   name: codescene
 spec:
   hosts:
-  - codescene.aws.atu.de
+  - <your.fqdn>
   gateways:
   - codescene-gateway
   http:
