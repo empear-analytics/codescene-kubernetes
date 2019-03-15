@@ -10,8 +10,16 @@ spec:
       number: 80
       name: http
       protocol: HTTP
+    port:
+      number: 443
+      name: https
+      protocol: HTTPS
     hosts:
-    - <your.fqdn>
+    - "<your.fqdn>"
+    tls:
+      mode: SIMPLE
+      privateKey: /etc/istio/ingressgateway-certs/tls.key
+      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -19,11 +27,14 @@ metadata:
   name: codescene
 spec:
   hosts:
-  - <your.fqdn>
+  - "<your.fqdn>"
   gateways:
   - codescene-gateway
   http:
-  - route:
+  - match:
+    - uri:
+        prefix: /
+    route:
     - destination:
         host: codescene
         port:
