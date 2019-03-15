@@ -47,14 +47,21 @@ spec:
         name: codescene
         resources:
             requests:
-              memory: "300Mi"
+              memory: "500Mi"
         ports:
         - containerPort: 3003
           protocol: TCP
         volumeMounts:
-        - mountPath: "/data"
+        - mountPath: "/opt/codescene"
           name: codescene-volume
+          subPath: codescene
+        - mountPath: "/codescene/analysis"
+          name: analysis-volume
+          subPath: analysis
       volumes:
         - name: codescene-volume
           persistentVolumeClaim:
             claimName: codescene-pvc
+        - name: analysis-volume
+          persistentVolumeClaim:
+            claimName: analysis-pvc
