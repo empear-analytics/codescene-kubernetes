@@ -97,13 +97,17 @@ The above creates a permanent volume and mounts it arst /data
 *HINT3* There are two files (`check_istio.sh` and `debug_istio.sh`)which may be helpful in collecting data when installing Codescene in an Istio Service Mesh.
 
 ## Test against local 
-*NOTE:* (8003 is an arbitrary port number to connect to the service listening on 3003. You are free to choose a different one.) 
+*NOTE:* (8003 is an arbitrary port number to connect to the service listening on 3003. You are free to choose a different one including 3003) 
 ```
 kubectl -n codescene port-forward $(kubectl -n codescene get pod -l app=codescene -o jsonpath='{.items[0].metadata.name}') 8003:3003
 ```
+or
 ```
-http://localhost:8003
+kubectl -n codescene port-forward $(kubectl -n codescene get pod -l app=codescene -o jsonpath='{.items[0].metadata.name}') 3003
 ```
+
+`http://localhost:8003` or `http://localhost:3003`
+
 If you are using Nginx or Traefik as an ingress controller (i.e. not Istio) then you will need to create an ingress to access from outside. See https://kubernetes.io/docs/concepts/services-networking/ingress/
 
 Here is an example (bog standard ingress defintion)
@@ -131,6 +135,32 @@ with your preferred controller e.g.
 
 `kubernetes.io/ingress.class: istio`
 
+As a final note, if you terminate your SSL at the LB, then make sure it supports http to https redirection (AWS, Azure)
+If not, then you need to handle the https redirection at the ingress controller. With Istio in GKE, for example, it would look like this
+```
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    tls:
+      httpsRedirect: true # sends 301 redirect for http requests
+    hosts:
+    - "<your.fqdn>"
+  - port: 
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      privateKey: /etc/istio/ingressgateway-certs/tls.key
+      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
+    hosts:
+    - "<your.fqdn>"
+```
 ## Files
 ```
 ├── README.md
