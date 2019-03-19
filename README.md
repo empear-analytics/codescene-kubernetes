@@ -2,6 +2,28 @@
 ## Install Codescene standalone on kubernetes
 These instructions have been tested on AWS but should also work for GKE and standard K8S. The only *caveat* is configuring Persistent Storage is environment-specific.
 
+##Memory allocation
+In some docker installation documentation, the recommendation was for `300Mi`. Codescene 3.0, however, running on K8S seems to work better with a higher memory allocation. I have found that
+changing 300Mi to 500Mi improved analysis times and reduced container failures 
+`memory: "500Mi" `
+
+The full defintion reads:
+```
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: codescene
+    spec:
+      containers:
+      - image: empear/ubuntu-onprem
+        imagePullPolicy: IfNotPresent
+        name: codescene
+        resources:
+            requests:
+              memory: "500Mi" 
+```
 ### Installing on AWS EKS 
 1. Create an EBS-VOLUME and note the volumeID and size
 2. Write the volumeID and size to cs-pv.yaml and cs-pv-claim.yaml
@@ -23,7 +45,7 @@ spec:
     volumeID: YOUR-VOLUME-ID 
     fsType: ext4
 ```
-For GKE replace the `awsElasticBlockStorage` with an entry for `gcePersistentDisk:`
+For GKE replace the `awsElasticBlockStorage` in the above example with an entry for `gcePersistentDisk:`
 ```
   gcePersistentDisk:
     pdName: pd-codescene
@@ -89,7 +111,7 @@ kubectl create -f cs-deployment.yaml -n $TARGET_NAMESPACE
 ```
 The above creates a permanent volume and mounts it arst /data
 
-# HINTS
+## HINTS
 *HINT1* You may also wish to define a configMap and put your Codescene config files in it. You can then mount configMap in place of the existing container files so that changes made are preserved on restarts.
 
 *HINT2* In Nginx environments you will also need to define an ingress. The file `cs-ingress.yaml` should get you started. For Istio, define a `Gateway` and `VirtualService` in place of an ingress.
@@ -135,7 +157,8 @@ with your preferred controller e.g.
 
 `kubernetes.io/ingress.class: istio`
 
-As a final note, if you terminate your SSL at the LB, then make sure it supports http to https redirection (AWS, Azure)
+##SSL Termination
+If your installation terminates SSL at the LB, then make sure it supports http to https redirection (AWS, Azure)
 If not, then you need to handle the https redirection at the ingress controller. With Istio in GKE, for example, it would look like this
 ```
 spec:
