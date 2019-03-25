@@ -29,6 +29,13 @@ spec:
     spec:
       containers:
       - image: empear/ubuntu-onprem
+        env:
+        - name: CODESCENE_DB_PATH
+          value: "/opt/codescene/codescene"
+        - name: CODESCENE_ANALYSIS_RESULTS_ROOT
+          value: "/opt/codescene/analysis"
+        - name: CODESCENE_CLOSED_REPOSITORIES_ROOT
+          value: "/opt/codescene/repos"
         imagePullPolicy: IfNotPresent
         name: codescene
         resources:
