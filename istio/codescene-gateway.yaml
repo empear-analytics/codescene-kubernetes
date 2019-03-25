@@ -6,20 +6,20 @@ spec:
   selector:
     istio: ingressgateway # use istio default controller
   servers:
-  - port:
+  - hosts:
+    - "codescene.k8s-pcconsultants.de"
+    port:
       number: 80
       name: http
       protocol: HTTP
-    hosts:
-      - "<your.fqdn>"
     tls:
-      httpsRedirect: true # sends 301 redirect for http requests
-  - port:
+      httpsRedirect: false # sends 301 redirect for http requests
+  - hosts:
+    - "codescene.k8s-pcconsultants.de"
+    port:
       number: 443
       name: https
       protocol: HTTPS
-    hosts:
-    - "<your.fqdn>"
     tls:
       mode: SIMPLE
       privateKey: /etc/istio/ingressgateway-certs/tls.key
@@ -31,11 +31,13 @@ metadata:
   name: codescene
 spec:
   hosts:
-  - "<your.fqdn>"
+  - "codescene.k8s-pcconsultants.de"
   gateways:
   - codescene-gateway
   http:
   - match:
+    - uri:
+        prefix: /login
     - uri:
         prefix: /
     route:
