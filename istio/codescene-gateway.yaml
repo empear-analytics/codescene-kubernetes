@@ -7,7 +7,7 @@ spec:
     istio: ingressgateway # use istio default controller
   servers:
   - hosts:
-    - "codescene.k8s-pcconsultants.de"
+    - "*"
     port:
       number: 80
       name: http
@@ -15,7 +15,7 @@ spec:
     tls:
       httpsRedirect: false # sends 301 redirect for http requests
   - hosts:
-    - "codescene.k8s-pcconsultants.de"
+    - "*"
     port:
       number: 443
       name: https
@@ -42,6 +42,6 @@ spec:
         prefix: /
     route:
     - destination:
-        host: codescene
+        host: codescene.codescene.svc.cluster.local
         port:
           number: 3003
