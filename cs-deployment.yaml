@@ -7,6 +7,7 @@ metadata:
   name: codescene
   labels:
     app: codescene
+    version: 3
 spec:
   ports:
   - name: http
@@ -26,6 +27,7 @@ spec:
     metadata:
       labels:
         app: codescene
+        version: 3
     spec:
       containers:
       - image: empear/ubuntu-onprem
