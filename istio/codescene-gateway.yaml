@@ -31,7 +31,7 @@ metadata:
   name: codescene
 spec:
   hosts:
-  - "codescene.k8s-pcconsultants.de"
+  - "codescene.your.fqdn"
   gateways:
   - codescene-gateway
   http:
