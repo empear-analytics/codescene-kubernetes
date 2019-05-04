@@ -6,12 +6,24 @@ spec:
   selector:
     istio: ingressgateway # use istio default controller
   servers:
-  - port:
+  - hosts:
+    - "*"
+    port:
       number: 80
       name: http
       protocol: HTTP
-    hosts:
-    - <your.fqdn>
+    tls:
+      httpsRedirect: false # sends 301 redirect for http requests
+  - hosts:
+    - "*"
+    port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      privateKey: /etc/istio/ingressgateway-certs/tls.key
+      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -19,12 +31,17 @@ metadata:
   name: codescene
 spec:
   hosts:
-  - <your.fqdn>
+  - "codescene.your.fqdn"
   gateways:
   - codescene-gateway
   http:
-  - route:
+  - match:
+    - uri:
+        prefix: /login
+    - uri:
+        prefix: /
+    route:
     - destination:
-        host: codescene
+        host: codescene.codescene.svc.cluster.local
         port:
           number: 3003

@@ -7,9 +7,15 @@ If you don't have a URL only for codescene (e.g. codescene.my-company.com), you'
 ```
   - match:
       uri:
-        prefix: /codescene/
+        prefix: /
     route:
     - destination:
         port:
           number: 3003
 ``` 
+
+For SSL terminations at the ingress controller, you may need to include a redirection definition
+```
+    tls:
+      httpsRedirect: true # sends 301 redirect for http requests
+```
