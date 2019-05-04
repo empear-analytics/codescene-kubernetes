@@ -7,7 +7,7 @@ metadata:
   name: codescene
   labels:
     app: codescene
-    version: 3
+    version: "3"
 spec:
   ports:
   - name: http
@@ -27,7 +27,7 @@ spec:
     metadata:
       labels:
         app: codescene
-        version: 3
+        version: "3"
     spec:
       containers:
       - image: empear/ubuntu-onprem
@@ -50,13 +50,13 @@ spec:
         - mountPath: "/opt/codescene"
           name: codescene-volume
           subPath: codescene
-        - mountPath: "/codescene/analysis"
+        - mountPath: "/opt/codescene/analysis"
           name: analysis-volume
           subPath: analysis
       volumes:
         - name: codescene-volume
           persistentVolumeClaim:
             claimName: codescene-pvc
-        - name: analysis-volume
-          persistentVolumeClaim:
-            claimName: analysis-pvc
+#        - name: analysis-volume
+#          persistentVolumeClaim:
+#            claimName: analysis-pvc
