@@ -33,11 +33,11 @@ spec:
       - image: empear/ubuntu-onprem
         env:
         - name: CODESCENE_DB_PATH
-          value: "/opt/codescene/codescene"
+          value: "/data/codescene/codescene"
         - name: CODESCENE_ANALYSIS_RESULTS_ROOT
-          value: "/opt/codescene/analysis"
+          value: "/data/codescene/analysis"
         - name: CODESCENE_CLOSED_REPOSITORIES_ROOT
-          value: "/opt/codescene/repos"
+          value: "/data/codescene/repos"
         imagePullPolicy: IfNotPresent
         name: codescene
         resources:
@@ -47,12 +47,12 @@ spec:
         - containerPort: 3003
           protocol: TCP
         volumeMounts:
-        - mountPath: "/opt/codescene"
+        - mountPath: "/data/codescene"
           name: codescene-volume
           subPath: codescene
-        - mountPath: "/opt/codescene/analysis"
-          name: analysis-volume
-          subPath: analysis
+#        - mountPath: "/data/codescene/analysis"
+#          name: analysis-volume
+#          subPath: analysis
       volumes:
         - name: codescene-volume
           persistentVolumeClaim:
