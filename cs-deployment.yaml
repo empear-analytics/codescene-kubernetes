@@ -36,7 +36,7 @@ spec:
           value: "/data/codescene/codescene"
         - name: CODESCENE_ANALYSIS_RESULTS_ROOT
           value: "/data/codescene/analysis"
-        - name: CODESCENE_CLOSED_REPOSITORIES_ROOT
+        - name: CODESCENE_CLONED_REPOSITORIES_ROOT
           value: "/data/codescene/repos"
         imagePullPolicy: IfNotPresent
         name: codescene
