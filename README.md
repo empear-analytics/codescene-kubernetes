@@ -1,8 +1,8 @@
 # codescene-kubernetes
 ## Install Codescene standalone on kubernetes
-These instructions have been tested on AWS but should also work for GKE and standard K8S. The only *caveat* is configuring Persistent Storage is environment-specific.
+These instructions have been tested on AWS and GKE and standard K8S and with Istio. The only *caveat* is configuring Persistent Storage is environment-specific.
 
-##Memory allocation
+### Memory allocation
 In some docker installation documentation, the recommendation was for `300Mi`. Codescene 3.0, however, running on K8S seems to work better with a higher memory allocation. I have found that
 changing 300Mi to 500Mi improved analysis times and reduced container failures 
 `memory: "500Mi" `
