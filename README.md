@@ -1,3 +1,5 @@
+# THIS REPOSITORY HAS BEEN DEPRECATED
+
 # codescene-kubernetes
 ## Install Codescene standalone on kubernetes
 These instructions have been tested on AWS and GKE and standard K8S and with Istio. The only *caveat* is configuring Persistent Storage is environment-specific.
